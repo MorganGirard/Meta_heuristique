@@ -62,20 +62,26 @@ public class JobShop {
     public static int trouverPireDateFin(ArrayList<MachineFin> dmts, Operation opPrecedente, DoubletMachinesTemps dmt) {
         int pireDateFin = 0;
         int flag = 0;
+        //System.out.println("Voici l'operation precedente : "+ opPrecedente);
         for (int i = 0; i < dmts.size(); i++) {
             if (dmts.get(i).getNumeroMachine() == dmt.getNumeroMachine()) {
                 flag = 1;
                 if (dmts.get(i).getTempsUtilisation() > opPrecedente.getDateFin()) {
                     pireDateFin = dmts.get(i).getTempsUtilisation() + dmt.getDuree();
-                    //System.out.println("La machine était pire cette fois");
+                    //System.out.println("La machine était pire cette fois pour : " +dmt);
                 } else {
                     pireDateFin = opPrecedente.getDateFin() + dmt.getDuree();
-                    //System.out.println("L'operation précédente était pire cette fois");
+                    //System.out.println("L'operation précédente était pire cette fois pour : "+dmt+" avec pour operation precedente : "+opPrecedente+"avec pour date de fin : "+opPrecedente.getDateFin());
                 }
             }
         }
         if (flag == 0) {
-            pireDateFin = dmt.getDuree();
+            //System.out.println("Je suis passer dans le cas la machine n'est pas trouvé ");
+            if(opPrecedente==null) {
+                pireDateFin = dmt.getDuree();
+            } else {
+                pireDateFin = opPrecedente.getDateFin() + dmt.getDuree();
+            }
         }
         return pireDateFin;
     }
@@ -127,15 +133,18 @@ public class JobShop {
                 if (nbIteration < jobs.get(i).getNbOperation()) {
                     trouverDoubletIteration = jobs.get(i).getOperations().get(nbIteration).getMachinesTemps();
                     machineUtiliseOperation = choisirMachinePourOperation(trouverDoubletIteration);
-
+                    //System.out.println("Machine utilisait : "+machineUtiliseOperation);
 
                     Operation opToAdd = jobs.get(i).getOperations().get(nbIteration);
 
                     int pireDateFin = trouverPireDateFin(machineTempsTotal, getOperationPrecedente(opToAdd,aideCalculOperations), machineUtiliseOperation);
                     machineTempsTotal = fusionnerDoublet3(machineTempsTotal, machineUtiliseOperation, pireDateFin);
+                    System.out.println("Machine tems total remplissage : "+machineTempsTotal);
                     opToAdd.setDateFin(pireDateFin);
                     operations.add(opToAdd);
+                    //System.out.println("Avec un temps minimal d'utilisation de : "+(pireDateFin-machineUtiliseOperation.getDuree())+ " sachant que la pire date de fin est : "+pireDateFin+" et a duree da la machine est : " + machineUtiliseOperation.getDuree());
                     aideCalculOperations.add(opToAdd);
+                    //System.out.println("Nouveau machine assignement; IdOp :  "+opToAdd.getId()+" numero machine : "+machineUtiliseOperation.getNumeroMachine()+" duree : "+machineUtiliseOperation.getDuree()+" date depart minimal : "+(pireDateFin-machineUtiliseOperation.getDuree()));
                     MachineAssignement machineAssignementToAdd = new MachineAssignement(opToAdd.getId(), machineUtiliseOperation.getNumeroMachine(),machineUtiliseOperation.getDuree(),pireDateFin-machineUtiliseOperation.getDuree());
                     vectorMachine.add(machineAssignementToAdd);
 
@@ -166,8 +175,11 @@ public class JobShop {
             doubletMachinesTempsToAdd = new DoubletMachinesTemps(vectorMachine.get(vm).getNumeroMachine(),
                         trouverPireDateFin(machineTempsTotal,getOperationPrecedente(operations.get(op),operations), operations.get(op).getMachinesTemps().get(indexMachine)));
             //System.out.println("machine temps total : "+machineTempsTotal+" op precedente "+getOperationPrecedente(operations.get(op),operations)+" doublet machine temps "+operations.get(op).getMachinesTemps().get(indexMachine));
-            //System.out.println(doubletMachinesTempsToAdd);
+            //System.out.println("machine temps to add : "+doubletMachinesTempsToAdd);
+            System.out.println("Machine temps to add : "+doubletMachinesTempsToAdd+" Machine temps total avant : "+machineTempsTotal);
             machineTempsTotal = fusionnerDoublet(machineTempsTotal,doubletMachinesTempsToAdd);
+            System.out.println("Machine temps total apres : "+machineTempsTotal);
+            System.out.println("");
             vm=0;
         }
         return trouverPlusGrandeDuree(machineTempsTotal);
@@ -219,7 +231,7 @@ public class JobShop {
             if(vectorMachine.get(ma).getOperationId()==id) {
                 flagMa = true;
                 int tempsMaxCalcule = tempsMaxDepartPere-vectorMachine.get(ma).getDuree();
-                System.out.println("Temps max depart pere : "+tempsMaxDepartPere+" duree de l'operation : "+vectorMachine.get(ma).getDuree());
+                //System.out.println("Temps max depart pere : "+tempsMaxDepartPere+" duree de l'operation : "+vectorMachine.get(ma).getDuree());
                 if(tempsMaxCalcule<vectorMachine.get(ma).getDateDepartMaximal()) {
                     //System.out.println("Le temps max calculé est : "+tempsMaxCalcule+" comparé au temps actuel qui est : "+vectorMachine.get(ma).getDateDepartMaximal());
                     vectorMachine.get(ma).setDateDepartMaximal(tempsMaxCalcule);
@@ -301,17 +313,15 @@ public class JobShop {
         for (int op=operations.size()-1;op>=0;op--){
             if (getTempsMaxFromOperationId(operations.get(op).getId())==0){
               setTempsMaxFromOperationId(operations.get(op).getId(),getTempsMinFromOperationId(operations.get(op).getId()));
-              System.out.println("Bonjour");
+              //System.out.println("Bonjour");
             }
             tempsPere= getTempsMaxFromOperationId(operations.get(op).getId());
-            System.out.println("Operation actuelle : "+operations.get(op)+" Operation precedent : "+getOperationIdPrecedente(operations.get(op),operations)+" Operation precedente machine :"+getOperationIdPrecedenteUtilisantMemeMachine(getNumeroMachineFromOperationId(operations.get(op).getId()),operations.get(op).getId()));
+            //System.out.println("Operation actuelle : "+operations.get(op)+" Operation precedent : "+getOperationIdPrecedente(operations.get(op),operations)+" Operation precedente machine :"+getOperationIdPrecedenteUtilisantMemeMachine(getNumeroMachineFromOperationId(operations.get(op).getId()),operations.get(op).getId()));
             //System.out.println("Temps max du pere : "+ tempsPere);
             //System.out.println("Operation actuelle : "+operations.get(op));
             /*calcul des temps maximum pour les fils*/
-
             calculerTempsDepartMaximal(getOperationIdPrecedente(operations.get(op),operations),tempsPere);
             calculerTempsDepartMaximal(getOperationIdPrecedenteUtilisantMemeMachine(getNumeroMachineFromOperationId(operations.get(op).getId()),operations.get(op).getId()),tempsPere);
-
         }
     }
 
@@ -327,7 +337,7 @@ public class JobShop {
         jobs = parseur.parseFile("t1.fjs");
         //System.out.println(jobs.toString());
         System.out.println("L'heuristique gloutonne qui créé les vecteurs trouve "+remplissageVecteursLogiqueGloutonne(jobs));
-        afficherOperations();
+        //afficherOperations();
         calculerTousTempsDepartMaximal();
         afficherVectorMachine();
         System.out.println("L'heuristique gloutonne trouve "+calculObjectif(jobs));

@@ -22,4 +22,8 @@ public class MachineFin {
     public void setTempsUtilisation(int tempsUtilisation) {
         this.tempsUtilisation = tempsUtilisation;
     }
+
+    @Override public String toString(){
+        return "Machine : "+numeroMachine+" temps utilisation : "+tempsUtilisation+" ";
+    }
 }
