@@ -324,7 +324,7 @@ public class JobShop {
         vectorMachine.clear();
         Parseur parseur=new Parseur();
         ArrayList<Job> jobs = new ArrayList<Job>();
-        jobs = parseur.parseFile("Mk01.fjs");
+        jobs = parseur.parseFile("t1.fjs");
         //System.out.println(jobs.toString());
         System.out.println("L'heuristique gloutonne qui créé les vecteurs trouve "+remplissageVecteursLogiqueGloutonne(jobs));
         afficherOperations();
