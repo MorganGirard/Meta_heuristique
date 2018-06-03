@@ -5,6 +5,7 @@ public class JobShop {
     public static ArrayList<Operation> operations = new ArrayList<>();
 
 
+    /*Permet d'afficher l'array liste vector machine*/
     public static void afficherVectorMachine() {
         System.out.println("Affichage Vector Machine");
         for (int i = 0; i < vectorMachine.size(); i++) {
@@ -16,6 +17,11 @@ public class JobShop {
         }
     }
 
+    /*Permet d'affichier l'array liste operations*/
+
+    /**
+     *
+     */
     public static void afficherOperations() {
         System.out.println("Affichage Operations");
         for (int i = 0; i < operations.size(); i++) {
@@ -27,7 +33,13 @@ public class JobShop {
         }
     }
 
-
+    /**
+     * Permet de remplir une table calculant le temps d'utilisation total d'une machine
+     * @param dmts table contenant les machines utilisé et leur temps d'utilisation
+     * @param dmt machine a ajouter avec un nouveau temps
+     * @param pireDateFin pire temps entre l'operation precedente et l'operation precedente utilisant la meme machine
+     * @return la table complete
+     */
     public static ArrayList<MachineFin> fusionnerDoublet3(ArrayList<MachineFin> dmts, DoubletMachinesTemps dmt, int pireDateFin) {
         int flag = 0;
         MachineFin machineFinToAdd = new MachineFin(dmt.getNumeroMachine(),pireDateFin);
@@ -43,6 +55,12 @@ public class JobShop {
         return dmts;
     }
 
+    /**
+     * Meme fonction que precedemment mais sans le temps des operations precedents celle ci
+     * @param dmts
+     * @param dmt
+     * @return
+     */
     public static ArrayList<MachineFin> fusionnerDoublet(ArrayList<MachineFin> dmts, DoubletMachinesTemps dmt) {
         MachineFin machineFinToAdd = new MachineFin(dmt.getNumeroMachine(),dmt.getDuree());
         int flag = 0;
@@ -58,36 +76,41 @@ public class JobShop {
         return dmts;
     }
 
-
+    /**
+     * Permet de trouver la pire date de fin entre l'operation precedent et l'operation precedente utilisant la meme machine
+     * @param dmts table contenant les temps d'utilisation des differentes machines
+     * @param opPrecedente operation precedente (pour 1,2 ce serait 1,1 par exemple)
+     * @param dmt machine pour laquelle on veut trouver le pire temps
+     * @return la pire date de fin
+     */
     public static int trouverPireDateFin(ArrayList<MachineFin> dmts, Operation opPrecedente, DoubletMachinesTemps dmt) {
         int pireDateFin = 0;
         int flag = 0;
-        //System.out.println("Voici l'operation precedente : "+ opPrecedente);
         for (int i = 0; i < dmts.size(); i++) {
             if (dmts.get(i).getNumeroMachine() == dmt.getNumeroMachine()) {
                 flag = 1;
                 if (dmts.get(i).getTempsUtilisation() > opPrecedente.getDateFin()) {
                     pireDateFin = dmts.get(i).getTempsUtilisation() + dmt.getDuree();
-                    //System.out.println("La machine était pire cette fois pour : " +dmt);
                 } else {
                     pireDateFin = opPrecedente.getDateFin() + dmt.getDuree();
-                    //System.out.println("L'operation précédente était pire cette fois pour : "+dmt+" avec pour operation precedente : "+opPrecedente+"avec pour date de fin : "+opPrecedente.getDateFin());
                 }
             }
         }
         if (flag == 0) {
-            //System.out.println("Je suis passer dans le cas la machine n'est pas trouvé ");
             if(opPrecedente.getId()==null) {
-                //System.out.println("On creer a partir de la duree du dmt : "+dmt.getDuree());
                 pireDateFin = dmt.getDuree();
             } else {
-                //System.out.println("On creer a partir de l'operation precedente : "+opPrecedente+" dmt actuel : " +dmt + " voici sa date de fin "+ opPrecedente.getDateFin());
                 pireDateFin = opPrecedente.getDateFin() + dmt.getDuree();
             }
         }
         return pireDateFin;
     }
 
+    /**
+     * permets de trouver la machine utilisant le plus de temps
+     * @param dmts tableau contenant les machines et leur temps d'utilisation
+     * @return la plus grande duree d'utilisation
+     */
     public static int trouverPlusGrandeDuree(ArrayList<MachineFin> dmts) {
         int duree = 0;
         for (int i = 0; i < dmts.size(); i++) {
@@ -98,6 +121,11 @@ public class JobShop {
         return duree;
     }
 
+    /**
+     * fonction permettant de choisir quelle machine va etre utilisee pour quelle operation
+     * @param dmts tableau contenant les possibilites d'utilisation de machine pour un operation et les temps associes
+     * @return un doublet machine et duree d'utilisation
+     */
     public static DoubletMachinesTemps choisirMachinePourOperation(ArrayList<DoubletMachinesTemps> dmts) {
         int dureeMin = 100000;
         DoubletMachinesTemps toReturn = new DoubletMachinesTemps();
@@ -110,9 +138,14 @@ public class JobShop {
         return toReturn;
     }
 
+    /**
+     * Permet de trouver l'operation precedent une autre (exemple 1,2 1,1)
+     * @param operationActuelle Operation pour laquelle on veut trouver la precedente
+     * @param aideCalculOperations Table dans laquelle on va chercher l'operation precedente
+     * @return l'operation precedente
+     */
     public static Operation getOperationPrecedente(Operation operationActuelle, ArrayList<Operation> aideCalculOperations) {
         Operation operationPrecedente = new Operation();
-        //operationPrecedente.setDateFin(0);
 
         for (Operation op : aideCalculOperations) {
             if ((op.getId().getNumeroJob() == operationActuelle.getId().getNumeroJob() && (op.getId().getNumeroOperation() == (operationActuelle.getId().getNumeroOperation() - 1)))) {
@@ -123,6 +156,11 @@ public class JobShop {
     }
 
 
+    /**
+     * Fonction permettant a partir d'une liste de jobs de remplir les 2 arrays listes vectorMachine et operations et de calculer l'heuristique gloutonne
+     * @param jobs liste des jobs
+     * @return la valeur de l'heuristique
+     */
     public static int remplissageVecteursLogiqueGloutonne(ArrayList<Job> jobs) {
         ArrayList<Operation> aideCalculOperations = new ArrayList<>();
         int nbIteration = 0;
@@ -135,18 +173,15 @@ public class JobShop {
                 if (nbIteration < jobs.get(i).getNbOperation()) {
                     trouverDoubletIteration = jobs.get(i).getOperations().get(nbIteration).getMachinesTemps();
                     machineUtiliseOperation = choisirMachinePourOperation(trouverDoubletIteration);
-                    //System.out.println("Machine utilisait : "+machineUtiliseOperation);
 
                     Operation opToAdd = jobs.get(i).getOperations().get(nbIteration);
 
                     int pireDateFin = trouverPireDateFin(machineTempsTotal, getOperationPrecedente(opToAdd,aideCalculOperations), machineUtiliseOperation);
                     machineTempsTotal = fusionnerDoublet3(machineTempsTotal, machineUtiliseOperation, pireDateFin);
-                    //System.out.println("Pire date fin : "+pireDateFin+" Machine tems total remplissage : "+machineTempsTotal);
                     opToAdd.setDateFin(pireDateFin);
                     operations.add(opToAdd);
-                    //System.out.println("Avec un temps minimal d'utilisation de : "+(pireDateFin-machineUtiliseOperation.getDuree())+ " sachant que la pire date de fin est : "+pireDateFin+" et a duree da la machine est : " + machineUtiliseOperation.getDuree());
+
                     aideCalculOperations.add(opToAdd);
-                    //System.out.println("Nouveau machine assignement; IdOp :  "+opToAdd.getId()+" numero machine : "+machineUtiliseOperation.getNumeroMachine()+" duree : "+machineUtiliseOperation.getDuree()+" date depart minimal : "+(pireDateFin-machineUtiliseOperation.getDuree()));
                     MachineAssignement machineAssignementToAdd = new MachineAssignement(opToAdd.getId(), machineUtiliseOperation.getNumeroMachine(),machineUtiliseOperation.getDuree(),pireDateFin-machineUtiliseOperation.getDuree());
                     vectorMachine.add(machineAssignementToAdd);
 
@@ -161,34 +196,34 @@ public class JobShop {
     }
 
 
-
+    /**
+     * Fonction permettant de calculer la valeur de l'heuristique a partir de vector machine et operations
+     * @return la valeur de l'heuristique
+     */
     public static int calculObjectif() {
         ArrayList<MachineFin> machineTempsTotal = new ArrayList<>();
         int indexMachine=0;
         DoubletMachinesTemps doubletMachinesTempsToAdd;
         int vm = 0;
         for (int op = 0; op < operations.size(); op++) {
-            //System.out.println(" op : "+op+" operation size : "+operations.size());
             while ((operations.get(op).getId()!=vectorMachine.get(vm).getOperationId())&&vm<vectorMachine.size()) {
-                //System.out.println("operationId : "+operations.get(op).getId()+" vectorMachine id : "+vectorMachine.get(vm).getOperationId());
-                //System.out.println(" vm: "+vm+" vectorMachine size : "+vectorMachine.size());
                 vm++;
             }
             indexMachine = operations.get(op).indexMachine(vectorMachine.get(vm).getNumeroMachine());
             doubletMachinesTempsToAdd = new DoubletMachinesTemps(vectorMachine.get(vm).getNumeroMachine(),
                         trouverPireDateFin(machineTempsTotal,getOperationPrecedente(operations.get(op),operations), operations.get(op).getMachinesTemps().get(indexMachine)));
-            //System.out.println("machine temps total : "+machineTempsTotal+" op precedente "+getOperationPrecedente(operations.get(op),operations)+" doublet machine temps "+doubletMachinesTempsToAdd+" operation actuelle : "+operations.get(op)+" index machine : "+indexMachine);
-            //System.out.println("machine temps to add : "+doubletMachinesTempsToAdd);
-            //System.out.println("Machine temps to add : "+doubletMachinesTempsToAdd+" Machine temps total avant : "+machineTempsTotal);
             machineTempsTotal = fusionnerDoublet(machineTempsTotal,doubletMachinesTempsToAdd);
-            //System.out.println("Machine temps total apres : "+machineTempsTotal);
-            //System.out.println("");
             vm=0;
         }
-        //System.out.println("Machine temps total a la fin : "+machineTempsTotal);
         return trouverPlusGrandeDuree(machineTempsTotal);
     }
 
+    /**
+     * Permet de recuperer l'operation utilisant la meme machine avant celle donnee en argument
+     * @param numeroMachine numero de la machine utilise
+     * @param id id de l'operation pour laquelle on veut trouver l'operation precedente utilisant la meme machine
+     * @return id de l'operation cherchee
+     */
     public static OperationId getOperationIdPrecedenteUtilisantMemeMachine (int numeroMachine, OperationId id) {
         int op=0;
         int ma=0;
@@ -216,9 +251,15 @@ public class JobShop {
         return idPrecedent;
     }
 
+    /**
+     * Permet de recuperer l'id de l'operation precedente
+     * @param operationActuelle operation pour laquelle on veut trouver l'id de l'operation precedente
+     * @param aideCalculOperations table des operations
+     * @return l'id de l'operation chercher
+     */
+
     public static OperationId getOperationIdPrecedente(Operation operationActuelle, ArrayList<Operation> aideCalculOperations) {
         Operation operationPrecedente = new Operation();
-        //operationPrecedente.setDateFin(0);
 
         for (Operation op : aideCalculOperations) {
             if ((op.getId().getNumeroJob() == operationActuelle.getId().getNumeroJob() && (op.getId().getNumeroOperation() == (operationActuelle.getId().getNumeroOperation() - 1)))) {
@@ -228,6 +269,11 @@ public class JobShop {
         return operationPrecedente.getId();
     }
 
+    /**
+     * Permet de calculer le temps maximal a partir duquel l'operation peut se lancer
+     * @param id id de l'operation
+     * @param tempsMaxDepartPere temps de depart maximal d'une des operations suivantes
+     */
     public static void calculerTempsDepartMaximal (OperationId id,int tempsMaxDepartPere) {
         int ma=0;
         boolean flagMa=false;
@@ -235,7 +281,6 @@ public class JobShop {
             if(vectorMachine.get(ma).getOperationId()==id) {
                 flagMa = true;
                 int tempsMaxCalcule = tempsMaxDepartPere-vectorMachine.get(ma).getDuree();
-                //System.out.println("Operation id : "+id+" Temps max depart pere : "+tempsMaxDepartPere+" duree de l'operation : "+vectorMachine.get(ma).getDuree()+" TemsMaxCalcule : "+tempsMaxCalcule);
                 if(tempsMaxCalcule<vectorMachine.get(ma).getDateDepartMaximal()) {
                     vectorMachine.get(ma).setDateDepartMaximal(tempsMaxCalcule);
                 }
@@ -244,6 +289,12 @@ public class JobShop {
         }
     }
 
+    /**
+     * Permet de calcul le temps minimal a partir duquel l'operation peut se lancer
+     * @param machine numero de la machine que l'operation utilise pour retrouver le temps minimal de depart de l'operation precedente utilisant la meme
+     * @param op operation precedente pour retrouver le temps minimal de depart de l'operation precedente
+     * @return le temps minimal
+     */
     public static int calculerTempsDepartMinimal (int machine, Operation op) {
         int pireDateFin;
         Operation operationPrecedente = getOperationPrecedente(op,operations);
@@ -253,6 +304,11 @@ public class JobShop {
         return pireDateFin;
     }
 
+    /**
+     * Fonction permettant de retourver le temps maximal de depart a partir d'une operation id
+     * @param id operation id
+     * @return temps maximal de depart pour cette operation
+     */
     public static int getTempsMaxFromOperationId (OperationId id) {
         int ma=0;
         boolean flagMa=false;
@@ -268,6 +324,11 @@ public class JobShop {
     }
 
 
+    /**
+     * Permet de recuperer un numero de machine dans l'array liste vector machine a partir d'un operation id
+     * @param id id de l'operation
+     * @return numero machine utilise par l'operation
+     */
     public static int getNumeroMachineFromOperationId (OperationId id) {
         int ma=0;
         boolean flagMa=false;
@@ -282,10 +343,15 @@ public class JobShop {
         return numMachine;
     }
 
+    /**
+     * Permet de changer le temps maximal a partir duquel peut demarer une operation
+     * @param id id de l'operation
+     * @param departMax temps maximum de depart pour l'operation
+     */
+
     public static void setTempsMaxFromOperationId (OperationId id, int departMax) {
         int ma=0;
         boolean flagMa=false;
-        int numMachine = 0;
         while (ma<vectorMachine.size()&&!flagMa) {
             if(vectorMachine.get(ma).getOperationId()==id) {
                 flagMa = true;
@@ -295,6 +361,10 @@ public class JobShop {
         }
     }
 
+    /**
+     * Permet de trouver dans la table operations le temps de l'operation qui finit la plus tard
+     * @return le temps de l'operation que finit la plus tard
+     */
     public static int getPlusGrandeDateFin () {
         int plusGrandeDateFin = 0;
         for(int op=0;op<operations.size();op++){
@@ -305,11 +375,13 @@ public class JobShop {
         return plusGrandeDateFin;
     }
 
+    /**
+     *  Permet pour tout les machinesAssignement de l'array liste vector machine de calculer le temps de depart maximal
+     */
     public static void calculerTousTempsDepartMaximal () {
         int tempsPere ;
         int plusGrandeDateFin = 0;
         plusGrandeDateFin = getPlusGrandeDateFin();
-        //System.out.println("Plus grande date fin : "+plusGrandeDateFin);
         /*On remplie d'abords les dates de depart maximal avec la pire date minimale*/
         for (int op=operations.size()-1;op>=0;op--){
             setTempsMaxFromOperationId(operations.get(op).getId(),plusGrandeDateFin);
@@ -327,6 +399,9 @@ public class JobShop {
         }
     }
 
+    /**
+     *  Permet pour tout les machinesAssignement de l'array liste vector machine de calculer le temps de depart minimal
+     */
     public static void calculerTousTempsDepartMinimal () {
         int departMinimal = 0;
         for(int vm=0;vm<vectorMachine.size();vm++){
@@ -338,9 +413,14 @@ public class JobShop {
         }
     }
 
+    /**
+     * Permet de retrouvedr le chemin critique parmis tous les machinesAssignement
+     * @return un array liste contenant les machinesAssignement dans le chemin critique
+     */
     public static ArrayList<MachineAssignement> getCheminCritique () {
         ArrayList<MachineAssignement>  cheminCritique = new ArrayList<>();
         for(int vm=0;vm<vectorMachine.size();vm++){
+            /*Si la date de depart maximale et minimale sont egals alors le machineAssignement fait parti du chemin critique*/
             if(vectorMachine.get(vm).getDateDepartMinimal()==vectorMachine.get(vm).getDateDepartMaximal()){
                 cheminCritique.add(vectorMachine.get(vm));
             }
@@ -348,6 +428,12 @@ public class JobShop {
         return cheminCritique;
     }
 
+    /**
+     * Permet de trouver l'operation qui termine le plus tard parmis deux operation donnees
+     * @param a
+     * @param b
+     * @return le temps de l'operation qui termine le plus tard
+     */
     public static int maxDateFinEntreDeuxOperations (Operation a,Operation b){
         int pireDateFin = 0;
         if(a.getDateFin()>b.getDateFin()){
@@ -358,6 +444,11 @@ public class JobShop {
         return pireDateFin;
     }
 
+    /**
+     * Permet de retrouver une operation dans l'array liste operations a partir de son id
+     * @param id l'id de l'operation souhaitee
+     * @return l'operation souhaitee
+     */
     public static Operation getOperationFromOperationId(OperationId id) {
         Operation operationTrouve = new Operation();
         int op=0;
@@ -371,6 +462,11 @@ public class JobShop {
         return operationTrouve;
     }
 
+    /**
+     * Permet de retrouver la position d'un machineAssignement dans l'array liste vector machine
+     * @param machineAssignementAvecIndexATrouve
+     * @return la position du machineAssignement dans l'array liste vector machine
+     */
     public static int getIndexFromMachineAssignement (MachineAssignement machineAssignementAvecIndexATrouve){
         int vm = 0;
         boolean flagVm = false;
@@ -378,12 +474,18 @@ public class JobShop {
             if(vectorMachine.get(vm)==machineAssignementAvecIndexATrouve){
                 flagVm = true;
             }
-            vm++;
+            else {
+                vm++;
+            }
         }
-        vm--;
         return vm;
     }
 
+    /**
+     * Permet de retrouver la machine assigné a une certaine operation
+     * @param op operation pour laquelle on veut retourver la machine qui l'a utilise
+     * @return le machineAssignement de l'operation
+     */
     public static MachineAssignement findMachineAssignedToOperation (Operation op) {
         MachineAssignement machineAssignedOperation = new MachineAssignement();
         int vm = 0;
@@ -398,6 +500,9 @@ public class JobShop {
         return machineAssignedOperation;
     }
 
+    /**
+     * Permet apres avoir finit de remplacer les machines utilisees pour les operations de calculer les dates de fin de chaque operation
+     */
     public static void calculerToutesPireDateFin () {
         int pireDateFin;
         MachineAssignement machineUtiliserPourOperation = new MachineAssignement();
@@ -409,9 +514,13 @@ public class JobShop {
         }
     }
 
-
+    /**
+     * Permet de tenter toutes les changement de machine possible pour une operation donne
+     * @param positionMachineAssignementVectorMachine  Position dans l'array liste vector machine de la machineAssignement que l'on veut modifier
+     * @param machineAssignementATenteDeChange MachineAssignement pour lequel on veut changer la machine utilisee
+     * @return le resultat de l'heuristique apres permutation
+     */
     public static int permuterMachineUtilise (int positionMachineAssignementVectorMachine ,MachineAssignement machineAssignementATenteDeChange) {
-        //System.out.println("On commence la fonction de permutation avec comme machineAssignement a permute : "+machineAssignementATenteDeChange);
         MachineAssignement machineAssignementAuxiliaire = new MachineAssignement(machineAssignementATenteDeChange.getOperationId(),machineAssignementATenteDeChange.getNumeroMachine(),machineAssignementATenteDeChange.getDuree(),machineAssignementATenteDeChange.getDateDepartMinimal());
         MachineAssignement meilleurMachineAUtilise = new MachineAssignement(machineAssignementATenteDeChange.getOperationId(),machineAssignementATenteDeChange.getNumeroMachine(),machineAssignementATenteDeChange.getDuree(),machineAssignementATenteDeChange.getDateDepartMinimal());
         boolean flagOp = false;
@@ -420,12 +529,13 @@ public class JobShop {
         int resultatCalculObjectif;
         int resultatHeuristique = calculObjectif();
         while(op<operations.size()&&!flagOp) {
-            if (operations.get(op).getId()== machineAssignementATenteDeChange.getOperationId()){
+            if (operations.get(op).getId()==machineAssignementATenteDeChange.getOperationId()){
                 flagOp = true;
+            } else {
+                op++;
             }
-            op++;
+
         }
-        op--;
         if (flagOp){
             for (int dmt=0;dmt<operations.get(op).getMachinesTemps().size();dmt++){
                 machineAssignementAuxiliaire.setNumeroMachine(operations.get(op).getMachinesTemps().get(dmt).getNumeroMachine());
@@ -436,19 +546,24 @@ public class JobShop {
                 calculerToutesPireDateFin();
                 resultatCalculObjectif = calculObjectif();
                 if (resultatCalculObjectif<resultatHeuristique){
-                    //System.out.println("On a trouve une meilleure machine a utiliser cela donne ce machina assignement : "+machineAssignementAuxiliaire);
                     resultatHeuristique = resultatCalculObjectif;
-                    meilleurMachineAUtilise = machineAssignementAuxiliaire;
+                    meilleurMachineAUtilise.setDuree(machineAssignementAuxiliaire.getDuree());
+                    meilleurMachineAUtilise.setDateDepartMinimal(machineAssignementAuxiliaire.getDateDepartMinimal());
+                    meilleurMachineAUtilise.setNumeroMachine(machineAssignementAuxiliaire.getNumeroMachine());
+                    meilleurMachineAUtilise.setOperationId(machineAssignementAuxiliaire.getOperationId());
                 } else {
-                    //System.out.println("Remise a zero");
                     vectorMachine.set(positionMachineAssignementVectorMachine,meilleurMachineAUtilise);
                 }
             }
         }
-        //System.out.println("Pour ce machineAssignement on retourne : "+resultatHeuristique);
         return resultatHeuristique;
     }
 
+    /***
+     * Permet de tenter toutes les permutations de machine possibles sur le chemin critique donne
+     * @param cC chemin critique donne
+     * @return le resultat de l'heuristique
+     */
     public static int cheminCritiquePermutationMachines (ArrayList<MachineAssignement> cC) {
         int meilleurResultat = 0;
         for (int ma=0; ma<cC.size();ma++){
@@ -457,54 +572,65 @@ public class JobShop {
         return meilleurResultat;
     }
 
+    /**
+     * Permet d'effectuer toutes les permutions de machine possibles sur les chemin critique successif jusqu'a que la modification n'ameliore plus le resultat
+     * @return le resultat de l'heuristique
+     */
     public static int heuristiqueVoisinageParChangementMachine () {
         int resultatHeuristique = 0;
         int resultatIntermediaire = 0;
         boolean finPermutations = false;
+        /*On effectue le calcul sur le chemin critique une premiere fois*/
         ArrayList<MachineAssignement> cheminCritique = getCheminCritique();
-        resultatHeuristique=cheminCritiquePermutationMachines(cheminCritique);
         calculerTousTempsDepartMinimal();
         calculerTousTempsDepartMaximal();
+        /* On obtient le resultat de la premier heuristique*/
+        resultatHeuristique=cheminCritiquePermutationMachines(cheminCritique);
+        /*Tant que l'on trouve une meilleure solution*/
         while (!finPermutations){
-            System.out.println("Je refais de nouveau le calcul avec un nouveau chemin critique");
+            /*On recalcul le chemin critique et les temps de depart minimums et maximums de tous les machinesAssignement de vector machine*/
             cheminCritique=getCheminCritique();
-            resultatIntermediaire = cheminCritiquePermutationMachines(cheminCritique);
             calculerTousTempsDepartMinimal();
             calculerTousTempsDepartMaximal();
+            resultatIntermediaire = cheminCritiquePermutationMachines(cheminCritique);
             if (resultatHeuristique==resultatIntermediaire){
+                /*Si le resultat de l'heuristique precedente est egale a la nouvelle alors le calcul est termine*/
                 finPermutations = true;
             } else {
+                /*Sinon on retiens la nouvelle valeur de l'heuristique calculee*/
                 resultatHeuristique = resultatIntermediaire;
             }
         }
         return resultatHeuristique;
     }
 
+    /**
+     * Le fichier main contient les differents test que l'on a pu effectuer pour verifier nos resultats
+     * @param args
+     */
     public static void main(String[] args){
-        /*FAIRE EN SORTE QUE LES CHOIX DE MACHINE SE FASSE ALEATOIREMENT*/
         ArrayList<MachineAssignement> arrayTest = new ArrayList<>();
         operations.clear();
         vectorMachine.clear();
         Parseur parseur=new Parseur();
         ArrayList<Job> jobs = new ArrayList<Job>();
-        jobs = parseur.parseFile("Mk01.fjs");
+        jobs = parseur.parseFile("mk06.fjs");
         //System.out.println(jobs.toString());
         System.out.println("L'heuristique gloutonne qui créé les vecteurs trouve "+remplissageVecteursLogiqueGloutonne(jobs));
         //afficherOperations();
-        //calculerTousTempsDepartMaximal();
-        afficherVectorMachine();
+        calculerTousTempsDepartMaximal();
+        calculerTousTempsDepartMinimal();
+        //afficherVectorMachine();
         //afficherOperations();
-        //System.out.println("L'heuristique gloutonne trouve "+calculObjectif());
+        System.out.println("L'heuristique gloutonne trouve "+calculObjectif());
         //arrayTest = getCheminCritique();
         //System.out.println("Voici le chemin critique : "+arrayTest);
         //System.out.println("Apres permutation on trouve : "+permuterMachineUtilise(getIndexFromMachineAssignement(arrayTest.get(2)),arrayTest.get(2)));
-        //System.out.println("Apres avoir fait toutes les permutations possibles dans le chemin critique on obtient : "+cheminCritiquePermutationMachines(arrayTest));
-        //calculerTousTempsDepartMaximal();
-        //calculerTousTempsDepartMinimal();
+        //ystem.out.println("Apres avoir fait toutes les permutations possibles dans le chemin critique on obtient : "+cheminCritiquePermutationMachines(arrayTest));
         //arrayTest = getCheminCritique();
-        //System.out.println("Voici le chemin critique : "+arrayTest);
+        //System.out.println("Apres avoir fait toutes les permutations possibles un deuxieme fois dans le nouveau chemin critique on obtient : "+cheminCritiquePermutationMachines(arrayTest));
         System.out.println("Le résultat obtenu par notre superbe heuristique est : "+heuristiqueVoisinageParChangementMachine());
         afficherVectorMachine();
-        //afficherOperations();
+        afficherOperations();
     }
 }
