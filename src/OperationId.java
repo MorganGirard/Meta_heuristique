@@ -25,8 +25,7 @@ public class OperationId {
 
     @Override
     public String toString() {
-        return "OperationId " +
-                "numeroJob=" + numeroJob +
+        return "numeroJob=" + numeroJob +
                 ", numeroOperation=" + numeroOperation;
     }
 }

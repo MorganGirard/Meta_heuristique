@@ -5,6 +5,9 @@ public class MachineAssignement {
     private int dateDepartMinimal;
     private int dateDepartMaximal;
 
+    public MachineAssignement() {
+    }
+
     public MachineAssignement(OperationId operationId, int numeroMachine, int duree, int dateDepartMinimal) {
         this.operationId = operationId;
         this.numeroMachine = numeroMachine;
