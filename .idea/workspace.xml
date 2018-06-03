@@ -15,8 +15,17 @@
       <file leaf-file-name="JobShop.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/JobShop.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="672">
-              <caret line="630" column="22" selection-start-line="630" selection-start-column="22" selection-end-line="637" selection-end-column="5" />
+            <state relative-caret-position="312">
+              <caret line="633" column="8" selection-start-line="633" selection-start-column="8" selection-end-line="633" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="137" selection-start-line="1" selection-start-column="137" selection-end-line="1" selection-end-column="137" />
             </state>
           </provider>
         </entry>
@@ -79,10 +88,11 @@
         <option value="$PROJECT_DIR$/src/MachineAssignement.java" />
         <option value="$PROJECT_DIR$/t2.fjs" />
         <option value="$PROJECT_DIR$/src/JobShop.java" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="20" />
     <option name="y" value="25" />
     <option name="width" value="1750" />
@@ -215,12 +225,12 @@
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32941177" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32941177" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14217032" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14217032" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
@@ -439,10 +449,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="137" selection-start-line="1" selection-start-column="137" selection-end-line="1" selection-end-column="137" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/JobShop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="630" column="22" selection-start-line="630" selection-start-column="22" selection-end-line="637" selection-end-column="5" />
+        <state relative-caret-position="312">
+          <caret line="633" column="8" selection-start-line="633" selection-start-column="8" selection-end-line="633" selection-end-column="8" />
         </state>
       </provider>
     </entry>
